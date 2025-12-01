@@ -8,6 +8,10 @@ pub fn runSolution(allocator: Allocator, year: u16, day: u16) !void {
             const Year = @import("2019/year.zig");
             try runYear(allocator, Year, 2019, day);
         },
+        2025 => {
+            const Year = @import("2025/year.zig");
+            try runYear(allocator, Year, 2025, day);
+        },
         else => {
             return error.YearNotImplemented;
         },
