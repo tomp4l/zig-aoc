@@ -13,3 +13,4 @@ pub const day12 = @import("day12.zig");
 pub const day13 = @import("day13.zig");
 pub const day14 = @import("day14.zig");
 pub const day15 = @import("day15.zig");
+pub const day16 = @import("day16.zig");
