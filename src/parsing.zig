@@ -37,6 +37,13 @@ pub fn parseAny(allocator: Allocator, parser: anytype, input: *std.Io.Reader, de
     const T = ParseReturnType(@TypeOf(parser));
     var result = try std.ArrayList(T).initCapacity(allocator, 100);
     errdefer result.deinit(allocator);
+
+    const ParserType = @TypeOf(parser);
+    const needs_alloc = switch (@typeInfo(ParserType)) {
+        .@"fn" => |f| f.params.len == 2,
+        else => return error.InvalidParserFunctionType,
+    };
+
     while (true) {
         var line = std.Io.Writer.Allocating.init(allocator);
         _ = try input.streamDelimiterEnding(&line.writer, delimiter);
@@ -44,7 +51,7 @@ pub fn parseAny(allocator: Allocator, parser: anytype, input: *std.Io.Reader, de
         defer allocator.free(line_slice);
 
         if (line_slice.len == 0) break;
-        const value = try parser(line_slice);
+        const value = if (needs_alloc) try parser(allocator, line_slice) else try parser(line_slice);
         try result.append(allocator, value);
         input.discardAll(1) catch |e| switch (e) {
             error.EndOfStream => break,
