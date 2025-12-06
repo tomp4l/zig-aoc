@@ -46,10 +46,9 @@ pub fn parseAny(allocator: Allocator, parser: anytype, input: *std.Io.Reader, de
 
     while (true) {
         var line = std.Io.Writer.Allocating.init(allocator);
+        defer line.deinit();
         _ = try input.streamDelimiterEnding(&line.writer, delimiter);
-        const line_slice = try line.toOwnedSlice();
-        defer allocator.free(line_slice);
-
+        const line_slice = line.written();
         if (line_slice.len == 0) break;
         const value = if (needs_alloc) try parser(allocator, line_slice) else try parser(line_slice);
         try result.append(allocator, value);

@@ -26,6 +26,7 @@ pub fn assertSolutionOutput(
 ) !void {
     const allocator = std.testing.allocator;
     var output_buffer = std.Io.Writer.Allocating.init(allocator);
+    defer output_buffer.deinit();
 
     var solution = root.Solution{
         .writer = &output_buffer.writer,
