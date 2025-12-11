@@ -29,7 +29,7 @@ pub fn run(allocator: Allocator, input: *std.Io.Reader, solution: *Solution) !vo
 const BatteryBank = struct {
     batteries: []u8,
 
-    fn deinit(self: BatteryBank, allocator: Allocator) void {
+    pub fn deinit(self: BatteryBank, allocator: Allocator) void {
         allocator.free(self.batteries);
     }
 
